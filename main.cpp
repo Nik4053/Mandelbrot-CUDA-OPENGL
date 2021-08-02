@@ -24,23 +24,21 @@ inline float printCUDATime(bool print){
 }
 
 int main(int argc, char **argv) {
-    size_t frames = 600;
+    size_t frames = 100;
     std::cout<< "Simulating "<< frames<<" frames..." <<std::endl;
-    int w = 1600;
-    int h = 1600;
+    int w = 3840;
+    int h = 2160;
     uchar4* imageCUDA;
     gpuErrchk(cudaMalloc((void**)&imageCUDA,w*h*sizeof(imageCUDA)));
     int2 loc = {0,0};
     init(w,h);
     startCUDATimer();
     for (size_t i = 0; i < frames; ++i) {
-        kernelLauncher(imageCUDA, w, h, loc);
+        kernelLauncher(imageCUDA, w, h, loc,i,false);
     }
-    //gpuErrchk( cudaPeekAtLastError() );
     float time = printCUDATime(false);
     std::cout << "Took: "<< time <<"ms.\t" << time/frames << "ms/frame.\t "<< 1000/time*frames<<"fps"<< std::endl;
-    //kernel<<<grid,threads>>> ( d_odata, d_idata, size_x, size_y,
-    //        NUM_REPS);
+
 
     return 0;
 }

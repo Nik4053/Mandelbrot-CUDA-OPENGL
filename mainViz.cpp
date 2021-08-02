@@ -32,14 +32,9 @@ void render() {
     cudaGraphicsMapResources(1, &cuda_pbo_resource, 0);
     cudaGraphicsResourceGetMappedPointer((void **) &d_out, NULL,
                                          cuda_pbo_resource);
-    kernelLauncher(d_out, W, H, loc);
+    kernelLauncher(d_out, W, H, loc,scrollDepth,itermode);
     cudaGraphicsUnmapResources(1, &cuda_pbo_resource, 0);
 
-    // Can be deleted. Shows current location in window title
-    char title[256];
-    const char *oldTitle = TITLE_STRING;
-    sprintf(title, "%s: Location = %d, sys = %d", oldTitle, loc.x, loc.y);
-    glutSetWindowTitle(title);
 }
 
 void drawTexture() {
@@ -68,6 +63,7 @@ void display() {
 void initGLUT(int *argc, char **argv) {
     glutInit(argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+    // glutInitDisplayString("hidpi core rgba double")
     glutInitWindowSize(W, H);
     glutCreateWindow(TITLE_STRING);
 #ifndef __APPLE__
@@ -108,6 +104,7 @@ int main(int argc, char **argv) {
     glutMouseFunc(mouse);
     glutDisplayFunc(display);
     initPixelBuffer();
+    //glutFullScreen();
     glutMainLoop();
     atexit(exitfunc);
     destroy();

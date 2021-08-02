@@ -12,7 +12,6 @@ else ()
     message("Release build.")
 endif ()
 
-
 SET(APP_EXE main)
 if (HEADLESS)
     ADD_EXECUTABLE(${APP_EXE} ${APP_EXE}.cpp)
