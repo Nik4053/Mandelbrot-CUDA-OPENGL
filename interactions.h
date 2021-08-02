@@ -1,7 +1,7 @@
 #ifndef INTERACTIONS_H
 #define INTERACTIONS_H
 #define W 1600
-#define H 1600
+#define H 800
 #define DELTA 5 // pixel increment for arrow keys
 #define TITLE_STRING "Mandelbrot"
 int2 loc = {0, 0};
@@ -15,16 +15,10 @@ void keyboard(unsigned char key, int x, int y) {
 
 void mouseMove(int x, int y) {
     if (true) return;
-    loc.x = W * x / glutGet(GLUT_WINDOW_WIDTH);
-    loc.y = H * y / glutGet(GLUT_WINDOW_HEIGHT);
-    glutPostRedisplay();
 }
 
 void mouseDrag(int x, int y) {
     if (true) return;
-    loc.x = W * x / glutGet(GLUT_WINDOW_WIDTH);
-    loc.y = H * y / glutGet(GLUT_WINDOW_HEIGHT);
-    glutPostRedisplay();
 }
 
 
@@ -61,11 +55,6 @@ void mouseWheel(int button, int dir, int x, int y) {
 //    if(button&1<<1) printf("right Mouse Button\n");
 //    if(button&1<<4) printf("Middle Mouse Button\n");
     scrollDepth+=dir;
-    if (dir > 0) {
-        // Zoom in
-    } else {
-        // Zoom out
-    }
     glutPostRedisplay();
 }
 

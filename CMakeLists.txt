@@ -21,6 +21,9 @@ else ()
     message("Visual build.")
 endif()
 
+if(SHOW_ONLY_ITER)
+    add_definitions(-DSHOW_ONLY_ITER)
+endif()
 
 IF(NOT HEADLESS)
     IF (UNIX)

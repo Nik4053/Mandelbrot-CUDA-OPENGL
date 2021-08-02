@@ -3,7 +3,7 @@
 #define TX 32
 #define TY 32
 
-
+#define MAX_ITERATIONS 500
 #define DECIMAL double
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
@@ -24,9 +24,7 @@ void calcMandel(size_t xPixel, size_t yPixel, size_t maxIter, T CyMin, T CxMin, 
     T PixelHeight = fabs(CyMax - CyMin) / (T)yPixel;
     T PixelWidth = fabs(CxMax - CxMin) / (T)xPixel;
 
-    //for(size_t y = 0; y<yPixel;y++){
     T Cy = CyMin + y * PixelHeight;
-    //for(size_t x = 0; x<xPixel;x++){
     T Cx = CxMin + x * PixelWidth;
     T ix = 0;
     T iy = 0;
@@ -39,6 +37,9 @@ void calcMandel(size_t xPixel, size_t yPixel, size_t maxIter, T CyMin, T CxMin, 
         iy = 2 * ixtemp * iy + Cy;
         if(ix*ix+iy*iy>40 && iter == 0) {
             iter = k;
+#ifdef SHOW_ONLY_ITER
+            break;
+#endif
         }
     }
 
@@ -65,14 +66,14 @@ void imageKernel(size_t w, size_t h, T* dataCUDA, uchar4* img, bool itermode) {
         iter =MIN(255,MAX(0, (log(dataCUDA[i*3+2])*20)));
     }
 
-    //MIN(255,MAX(0, (dataCUDA[i*3+2]*1)));// MIN(255,MAX(0, (log(dataCUDA[i*3+2])*20)));
-    if(dataCUDA[i*3+0]!=0||dataCUDA[i*3+1]!=0){
-        //iter = 0;
-    }
     img[i].x = r;//r;
     img[i].y = g;
     img[i].z = iter;
     img[i].w = 255;
+#ifdef SHOW_ONLY_ITER
+    img[i].x = 0;//r;
+    img[i].y = 0;
+#endif
 
 
 }
@@ -93,7 +94,7 @@ void kernelLauncher(uchar4 *d_out, int w, int h, int2 pos, int scroll,bool iterm
     int2 curPos = {pos.x - oldPos.x,pos.y-oldPos.y};
     midPoint = { midPoint.x+ (double)curPos.x*stepsize*curWindow.x,midPoint.y+ (double)curPos.y*stepsize*curWindow.y};
     oldPos = {pos.x,pos.y};
-    calcMandel<DECIMAL><<<gridSize, blockSize >>>(w, h, 500, midPoint.y - curWindow.y , midPoint.x - curWindow.x, midPoint.y+ curWindow.y, midPoint.x + curWindow.x,dataCUDA);
+    calcMandel<DECIMAL><<<gridSize, blockSize >>>(w, h, MAX_ITERATIONS, midPoint.y - curWindow.y , midPoint.x - curWindow.x, midPoint.y+ curWindow.y, midPoint.x + curWindow.x,dataCUDA);
     gpuErrchk( cudaPeekAtLastError() );
     imageKernel<DECIMAL><<<gridSize, blockSize >>>(w, h,dataCUDA, d_out,itermode);
     gpuErrchk( cudaPeekAtLastError() );

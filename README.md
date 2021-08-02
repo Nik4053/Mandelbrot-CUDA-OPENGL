@@ -1,3 +1,6 @@
+Change the kernel.cu -> MAX_ITERATIONS param to a higher number to get higher definition results.
+Compile with -DSHOW_ONLY_ITER=TRUE to only show iterations as image.
+
 # Setup
 ## Windows
 1. Install CUDA toolkit from [here](https://developer.nvidia.com/cuda-downloads?target_os=Windows&target_arch=x86_64). Note: lib has been tested with CUDA 11.04
